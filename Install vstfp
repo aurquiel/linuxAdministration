@@ -1,0 +1,63 @@
+Configuracion del servidor FTP
+
+    • Instalar ftp
+
+sudo apt install vsftpd
+
+    • Hacer un backup del archivo de configuracion 
+
+		sudo cp /etc/vsftpd.conf /etc/vsftpd.conf.back
+
+    • Editar el archivo de configracion
+
+		nano /etc/vsftpd.conf
+
+    • Configurar el firewall, añadir reglas
+	
+		sudo ufw allow sftp
+		sudo ufw allow ftp
+		sudo ufw allow 20/tcp
+
+    • Reiniciar el firewall
+
+		sudo ufw reload
+	
+    • Añadir el usuario ftp
+
+		sudo ufw  reloadadduser -m ftpuser
+		sudo useradd  -m ftpuser
+		sudo passwd ftpuser
+
+    • Crear carpeta del ftp 
+
+		sudo mkdir /home/ftpuser/ftp
+
+    • Quitar permisos de escritura
+
+		sudo chown nobody:nogroup /home/ftpuser/ftp
+		sudo chmod a-w /home/ftpuser/ftp
+
+    • Añadir la carpeta files
+
+		sudo mkdir /home/ftpuser/ftp/files
+
+    • Cambiar dueño y grupo a ftpuser
+
+		sudo chown ftpuser:ftpuser /home/ftpuser/ftp/files
+
+    • Añadir archivo de prueba
+
+		sudo echo "test file for vsftpd" | sudo tee /home/ftpuser/ftp/files/test.txt
+
+
+    • Añadir certifiacdos de seguridad
+
+		sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/vsftpd.pem -out /etc/ssl/private/vsftpd.pem
+		
+    • Reiniciar servicio ftp
+
+		sudo service vsftpd restart
+
+    • Login
+	
+		sftp ftpuser@91.121.210.118
